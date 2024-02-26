@@ -1,0 +1,46 @@
+<!-- Your existing code -->
+
+<script>
+    // Get widget reference
+    var widget = uploadcare.Widget("[role=uploadcare-uploader]");
+    // Get product gallery container
+    var galleryContainer = document.querySelector(".product-gallery__media-list");
+    // Get the first image in the gallery
+    var firstImage = galleryContainer ? galleryContainer.querySelector(".product-gallery__media img") : null;
+
+    // Disable "add to cart" and "buy now" buttons initially
+    var buyNowBtn = document.querySelector(".shopify-payment-button");
+    var addToCartBtn = document.querySelector(".product-form__submit");
+
+    if (buyNowBtn && addToCartBtn) {
+        buyNowBtn.disabled = true;
+        addToCartBtn.disabled = true;
+    }
+
+    // This fires once a file is uploaded
+    widget.onUploadComplete(function(fileInfo) {
+        if (!firstImage) {
+            console.error("First image not found.");
+            return;
+        }
+
+        // Get the CDN URL of the uploaded image
+        var uploadedImage = fileInfo.cdnUrl;
+
+        // Update the src and srcset of the first image in the gallery
+        firstImage.src = uploadedImage;
+        firstImage.srcset = uploadedImage + " " + firstImage.width + "w";
+
+        // Enable "add to cart" and "buy now" buttons once image uploaded
+        if (buyNowBtn && addToCartBtn) {
+            buyNowBtn.disabled = false;
+            addToCartBtn.disabled = false;
+        }
+
+        // Add the "custimg" class to the first .product-gallery__media
+        var firstMedia = galleryContainer ? galleryContainer.querySelector(".product-gallery__media:first-child") : null;
+        if (firstMedia) {
+            firstMedia.classList.add("custimg");
+        }
+    });
+</script>
